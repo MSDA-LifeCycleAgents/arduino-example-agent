@@ -5,7 +5,7 @@
 class TempSensor : public Sensor
 {
 public:
-    TempSensor() : Sensor("TemperatureSensor", "C")
+    TempSensor() : Sensor("TemperatureSensor", "C", 30, -273.15f, 1000.0f)
     {}
 
     virtual bool activate() override

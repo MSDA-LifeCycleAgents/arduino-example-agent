@@ -5,7 +5,7 @@
 class AcceleroSensor : public Sensor
 {
 public:
-    AcceleroSensor() : Sensor("AcceleroSensor", "G")
+    AcceleroSensor() : Sensor("AcceleroSensor", "G", 10, -1000.0f, 1000.0f)
     {}
 
     virtual bool activate() override

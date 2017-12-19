@@ -56,13 +56,27 @@ public:
         return _name;
     }
 
+    /**
+     * Gets the interval of the sensor
+     *
+     * \return the interval of the sensor
+     */
+    size_t getInterval()
+    {
+        return _interval;
+    }
+
 protected:
     /**
      * 
      * \param name the name of the sensor
      * \param unit the unit used by the sensor
+     * \param interval the interval of the sensor
+     * \param minval the minimum value expected from the sensor
+     * \param maxval the maximum value expected from the sensor
     */
-    Sensor(const char* name, const char* unit) : _name{name}, _unit{unit}
+    Sensor(const char* name, const char* unit, size_t interval, size_t minval, size_t maxval)
+        : _name{name}, _unit{unit}, _interval{interval}, _minVal{minval}, _maxVal{maxval}
     {}
     
     bool active = false;
@@ -70,4 +84,7 @@ protected:
 private:
     const char* _unit;
     const char* _name;
+    const size_t _interval;
+    const double _minVal;
+    const double _maxVal;
 };
