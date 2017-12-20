@@ -40,7 +40,8 @@ public:
             for (auto& pair : sensor->getData())
             {
                 auto sp = doc.NewElement("value");
-                sp->SetAttribute(pair.first, pair.second);
+                sp->SetAttribute("measurement", pair.first);
+                sp->SetText(pair.second);
                 s->InsertEndChild(sp);
             }
         }
