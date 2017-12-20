@@ -75,7 +75,7 @@ protected:
      * \param minval the minimum value expected from the sensor
      * \param maxval the maximum value expected from the sensor
     */
-    Sensor(const char* name, const char* unit, size_t interval, size_t minval, size_t maxval)
+    Sensor(const char* name, const char* unit, size_t interval, double minval, double maxval)
         : _name{name}, _unit{unit}, _interval{interval}, _minVal{minval}, _maxVal{maxval}
     {}
     
