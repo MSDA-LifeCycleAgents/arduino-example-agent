@@ -20,14 +20,17 @@ public:
         //not implemented
         return true;
     }
-
+    
     virtual const std::map<const char*, double> getData() override
     {
-        int adc_val = analogRead(pin);
-        double voltage = adc_val * ( 3.3 / 1024.0 );
-        return std::map<const char*, double> {{"Voltage", voltage}};
+        return std::map<const char*, double> {{"Voltage", getVoltage()}};
     }
 
 private:
+    double getVoltage(){
+      int adc_val = analogRead(pin);
+      double voltage = adc_val * ( 3.3 / 1024.0);
+      return voltage;
+    }
     uint8_t pin;
 };
