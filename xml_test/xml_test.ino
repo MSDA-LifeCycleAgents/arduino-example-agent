@@ -1,10 +1,10 @@
 #include "tinyxml2.h"
-#include <Ardunio.h>
 using namespace tinyxml2;
 
 #include "sensor_agent.h"
 #include "accelero_sensor.h"
 #include "temp_sensor.h"
+#include "arduino_adc_sensor.h"
 
 void setup()
 {
@@ -18,7 +18,8 @@ void loop()
   Serial.println("Start");
   TempSensor ts;
   AcceleroSensor as;
-  SensorAgent sa("HW", std::list<Sensor*>{&ts, &as});
+  ADCSensor adc(A0);
+  SensorAgent sa("HW", std::list<Sensor*>{&ts, &as, &adc});
   Serial.println(sa.toXML());
   Serial.println("Done!");
   delay(100000);
