@@ -6,7 +6,7 @@
 class ADCSensor : public Sensor
 {
 public:
-    ADCSensor(uint8_t pin=A0) : Sensor("TemperatureSensor", "C", 30, -273.15f, 1000.0f),pin(pin)
+    ADCSensor(uint8_t pin=A0) : Sensor("VoltageSensor", "V", 30, -0.0f, 3.3f),pin(pin)
     {}
 
     virtual bool activate() override
