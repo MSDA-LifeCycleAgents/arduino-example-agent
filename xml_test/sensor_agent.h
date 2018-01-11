@@ -3,6 +3,7 @@
 #include <list>
 #include "sensor.h"
 #include "tinyxml2.h"
+#include <NTPClient.h>
 
 using namespace tinyxml2;
 
@@ -15,8 +16,9 @@ public:
      * \param name the name of the sensor agent
      * \param sensors a list of the sensors associated with the agent
     */
-    SensorAgent(const char* name, const char* identifier, const char* topic, size_t daysMsg, bool toDA, std::list<Sensor*> sensors)
-        : _name{name}, _identifier{identifier}, _topic{topic}, _daysToKeepMessages{daysMsg}, _toDecisionAgent{toDA}, _sensors{sensors}
+
+    SensorAgent(const char* name, const char* identifier, const char* topic, size_t daysMsg, bool toDA, std::list<Sensor*> sensors, NTPClient &ntp)
+        : _name{name}, _identifier{identifier}, _topic{topic}, _daysToKeepMessages{daysMsg}, _toDecisionAgent{toDA}, _sensors{sensors}, ntp(ntp)
     // TODO: replace options with struct?
     {}
 
@@ -125,6 +127,13 @@ public:
         XMLDocument doc;
         auto root = doc.NewElement("sensorreading");
         doc.InsertEndChild(root);
+
+        auto timestamp = doc.NewElement("timestamp");
+        long unsigned int time = ntp.getEpochTime();
+        String time_str = String(time);
+        timestamp->SetText(time_str.c_str());
+        root->InsertEndChild(timestamp);
+        
         auto sroot = doc.NewElement("sensors");
         root->InsertEndChild(sroot);
 
@@ -153,4 +162,5 @@ private:
     const char* _topic;
     const size_t _daysToKeepMessages;
     const bool _toDecisionAgent;
+    NTPClient &ntp;
 };
