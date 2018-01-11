@@ -66,6 +66,36 @@ public:
         return _interval;
     }
 
+    /**
+     * Gets the minimum value supported by the sensor
+     *
+     * \return the minimum value supported by the sensor
+     */
+    double getMinVal()
+    {
+        return _minVal;
+    }
+
+    /**
+     * Gets the maximum value supported by the sensor
+     *
+     * \return the maximum value supported by the sensor
+     */
+    double getMaxVal()
+    {
+        return _maxVal;
+    }
+
+    /**
+     * Gets the amount of backup measurements to keep
+     *
+     * \return the amount of backup measurements
+     */
+    size_t getNrBackupMeasurements()
+    {
+        return _nrBackupMeasurements;
+    }
+
 protected:
     /**
      * 
@@ -75,8 +105,8 @@ protected:
      * \param minval the minimum value expected from the sensor
      * \param maxval the maximum value expected from the sensor
     */
-    Sensor(const char* name, const char* unit, size_t interval, double minval, double maxval)
-        : _name{name}, _unit{unit}, _interval{interval}, _minVal{minval}, _maxVal{maxval}
+    Sensor(const char* name, const char* unit, size_t interval, double minval, double maxval, size_t nrBackupMeasurements)
+        : _name{name}, _unit{unit}, _interval{interval}, _minVal{minval}, _maxVal{maxval}, _nrBackupMeasurements{nrBackupMeasurements}
     {}
     
     bool active = false;
@@ -87,4 +117,5 @@ private:
     const size_t _interval;
     const double _minVal;
     const double _maxVal;
+    const size_t _nrBackupMeasurements;
 };
