@@ -70,6 +70,31 @@ public:
             auto interval = doc.NewElement("intervalinseconds");
             interval->SetText(sensor->getInterval());
             s->InsertEndChild(interval);
+            
+            // plans
+            auto sPlans = doc.NewElement("plans");
+            s->InsertEndChild(sPlans);
+
+            for (auto& plan : sensor->getPlans())
+            {
+                auto p = doc.NewElement("plan");
+                sPlans->InsertEndChild(p);
+                auto pType = doc.NewElement(plan.planType == PlanType::Below ? "below" : "above");
+                pType->SetText(plan.threshold);
+                p->InsertEndChild(pType);
+                auto pMsg = doc.NewElement("message");
+                pMsg->SetText(plan.message);
+                p->InsertEndChild(pMsg);
+                auto pVia = doc.NewElement("via");
+                pVia->SetText(plan.via);
+                p->InsertEndChild(pVia);
+                auto pTo = doc.NewElement("to");
+                pTo->SetText(plan.to);
+                p->InsertEndChild(pTo);
+                auto pLimit = doc.NewElement("limit");
+                pLimit->SetText(plan.limit);
+                p->InsertEndChild(pLimit);
+            }
 
             auto backups = doc.NewElement("amountOfBackupMeasurements");
             backups->SetText(sensor->getNrBackupMeasurements());

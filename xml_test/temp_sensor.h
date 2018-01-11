@@ -5,7 +5,7 @@
 class TempSensor : public Sensor
 {
 public:
-    TempSensor() : Sensor("TemperatureSensor", "C", 30, -273.15f, 1000.0f, 10)
+    TempSensor(std::list<Plan> plans) : Sensor("TemperatureSensor", "C", 30, -273.15f, 1000.0f, 10, plans)
     {}
 
     virtual bool activate() override
