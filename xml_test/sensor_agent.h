@@ -144,10 +144,12 @@ public:
             sroot->InsertEndChild(s);
             for (auto& pair : sensor->getData())
             {
-                auto sp = doc.NewElement("value");
-                sp->SetAttribute("measurement", pair.first);
-                sp->SetText(pair.second);
-                s->InsertEndChild(sp);
+                auto sm = doc.NewElement("measurement");
+                sm->SetAttribute("id", pair.first);
+                auto sv = doc.NewElement("value");
+                sv->SetText(pair.second);
+                sm->InsertEndChild(sv);
+                s->InsertEndChild(sm);
             }
         }
 
