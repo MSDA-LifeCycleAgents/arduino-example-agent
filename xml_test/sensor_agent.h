@@ -3,6 +3,7 @@
 #include <list>
 #include "sensor.h"
 #include "tinyxml2.h"
+#include <NTPClient.h>
 
 using namespace tinyxml2;
 
@@ -15,7 +16,7 @@ public:
      * \param name the name of the sensor agent
      * \param sensors a list of the sensors associated with the agent
     */
-    SensorAgent(const char* name, std::list<Sensor*> sensors) : sensors{sensors}
+    SensorAgent(const char* name, std::list<Sensor*> sensors, NTPClient &ntp) : sensors{sensors}, ntp(ntp)
     {}
     
     /**
@@ -29,9 +30,16 @@ public:
         XMLDocument doc;
         auto root = doc.NewElement("sensorreading");
         doc.InsertEndChild(root);
+
+        auto timestamp = doc.NewElement("timestamp");
+        long unsigned int time = ntp.getEpochTime();
+        String time_str = String(time);
+        timestamp->SetText(time_str.c_str());
+        root->InsertEndChild(timestamp);
+        
         auto sroot = doc.NewElement("sensors");
         root->InsertEndChild(sroot);
-
+        
         for (auto& sensor : sensors)
         {
             auto s = doc.NewElement("sensor");
@@ -52,4 +60,5 @@ public:
     }
 private:
     std::list<Sensor*> sensors;
+    NTPClient &ntp;
 };
