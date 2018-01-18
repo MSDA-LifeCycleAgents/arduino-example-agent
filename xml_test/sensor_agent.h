@@ -97,6 +97,7 @@ public:
     const char* toXML(std::list<Sensor*> sensors)
     {
         XMLDocument doc;
+        doc.InsertEndChild(doc.NewDeclaration());
         auto root = doc.NewElement("sensorreading");
         doc.InsertEndChild(root);
 
