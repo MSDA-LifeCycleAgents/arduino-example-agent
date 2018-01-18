@@ -98,9 +98,14 @@ public:
         return _nrBackupMeasurements;
     }
 
-    std::list<Plan> getPlans()
+    bool needsUpdate(unsigned long t)
     {
-        return _plans;
+        if (t > lastTimeUpdated + _interval)
+        {
+            lastTimeUpdated = t;
+            return true;
+        }
+        return false;
     }
 
 protected:
@@ -112,8 +117,8 @@ protected:
      * \param minval the minimum value expected from the sensor
      * \param maxval the maximum value expected from the sensor
     */
-    Sensor(const char* name, const char* unit, size_t interval, double minval, double maxval, size_t nrBackupMeasurements, std::list<Plan> plans)
-        : _name{name}, _unit{unit}, _interval{interval}, _minVal{minval}, _maxVal{maxval}, _nrBackupMeasurements{nrBackupMeasurements}, _plans{plans}
+    Sensor(const char* name, const char* unit, size_t interval, double minval, double maxval, size_t nrBackupMeasurements)
+        : _name{name}, _unit{unit}, _interval{interval}, _minVal{minval}, _maxVal{maxval}, _nrBackupMeasurements{nrBackupMeasurements}
     {}
     
     bool active = false;
@@ -125,5 +130,6 @@ private:
     const double _minVal;
     const double _maxVal;
     const size_t _nrBackupMeasurements;
-    std::list<Plan> _plans;
+
+    unsigned long lastTimeUpdated = 0;
 };

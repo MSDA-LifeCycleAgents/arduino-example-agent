@@ -13,6 +13,11 @@ using namespace tinyxml2;
 WiFiUDP ntpUDP;
 NTPClient ntp(ntpUDP);
 
+TempSensor ts;
+AcceleroSensor as;
+ADCSensor adc(A0);
+SensorAgent sa("Hardware agent", "4, chosen by fair dice roll, guaranteed to be random.", "SomeNotSoRandomTopic", false, std::list<Sensor*>{&ts, &as, &adc}, ntp);
+
 void setup()
 {
   Serial.begin(115200);
@@ -27,28 +32,14 @@ void setup()
   }
   Serial.println("wifi connected!");
   ntp.begin();
+  ntp.update();
+  Serial.println();
+  Serial.println(sa.createInstructionSet());
+  Serial.println();
 }
 
 void loop()
 {
   ntp.update();
-  Serial.print("Current time: ");
-  Serial.println(ntp.getFormattedTime());
-  Serial.print("Current unix time: ");
-  Serial.println(ntp.getEpochTime());
-  Serial.println("Start");
-
-  Plan pCold{PlanType::Below, 0, "It's freezing!", "", "", 10};
-  Plan pHot{PlanType::Above, 100, "HOT!", "", "", 10};
-  Plan pFast{PlanType::Above, 100, "Too fast!", "", "", 10};
-
-  TempSensor ts{std::list<Plan>{pCold, pHot}};
-  AcceleroSensor as{std::list<Plan>{pFast}};
-  ADCSensor adc(std::list<Plan>{}, A0);
-  SensorAgent sa("Hardware agent", "4, chosen by fair dice roll, guaranteed to be random.", "SomeNotSoRandomTopic", 1, false, std::list<Sensor*>{&ts, &as, &adc}, ntp);
-  Serial.println(sa.createInstructionSet());
-  Serial.println();
-  Serial.println(sa.toXML());
-  Serial.println("Done!");
-  delay(100000);
+  sa.update();
 }

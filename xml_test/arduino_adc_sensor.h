@@ -6,7 +6,8 @@
 class ADCSensor : public Sensor
 {
 public:
-    ADCSensor(std::list<Plan> plans, uint8_t pin=A0) : Sensor("VoltageSensor", "V", 30, -0.0f, 3.3f, 10, plans),pin(pin)
+    ADCSensor(uint8_t pin=A0)
+        : Sensor("VoltageSensor", "V", 30, -0.0f, 3.3f, 10), pin(pin)
     {}
 
     virtual bool activate() override

@@ -16,11 +16,11 @@ public:
      * \param name the name of the sensor agent
      * \param sensors a list of the sensors associated with the agent
     */
-
-    SensorAgent(const char* name, const char* identifier, const char* topic, size_t daysMsg, bool toDA, std::list<Sensor*> sensors, NTPClient &ntp)
-        : _name{name}, _identifier{identifier}, _topic{topic}, _daysToKeepMessages{daysMsg}, _toDecisionAgent{toDA}, _sensors{sensors}, ntp(ntp)
+    SensorAgent(const char* name, const char* identifier, const char* topic, bool toDA, std::list<Sensor*> sensors, NTPClient &ntp)
+        : _name{name}, _identifier{identifier}, _topic{topic}, _toDecisionAgent{toDA}, _sensors{sensors}, ntp(ntp)
     // TODO: replace options with struct?
-    {}
+    {
+    }
 
     const char* createInstructionSet()
     {
@@ -41,9 +41,6 @@ public:
         auto tName = doc.NewElement("name");
         tName->SetText(_topic);
         topic->InsertEndChild(tName);
-        auto days = doc.NewElement("daysToKeepMessages");
-        days->SetText(_daysToKeepMessages);
-        topic->InsertEndChild(days);
         auto toDA = doc.NewElement("directToDecisionAgent");
         toDA->SetText(_toDecisionAgent);
         msg->InsertEndChild(toDA);
@@ -73,31 +70,6 @@ public:
             interval->SetText(sensor->getInterval());
             s->InsertEndChild(interval);
             
-            // plans
-            auto sPlans = doc.NewElement("plans");
-            s->InsertEndChild(sPlans);
-
-            for (auto& plan : sensor->getPlans())
-            {
-                auto p = doc.NewElement("plan");
-                sPlans->InsertEndChild(p);
-                auto pType = doc.NewElement(plan.planType == PlanType::Below ? "below" : "above");
-                pType->SetText(plan.threshold);
-                p->InsertEndChild(pType);
-                auto pMsg = doc.NewElement("message");
-                pMsg->SetText(plan.message);
-                p->InsertEndChild(pMsg);
-                auto pVia = doc.NewElement("via");
-                pVia->SetText(plan.via);
-                p->InsertEndChild(pVia);
-                auto pTo = doc.NewElement("to");
-                pTo->SetText(plan.to);
-                p->InsertEndChild(pTo);
-                auto pLimit = doc.NewElement("limit");
-                pLimit->SetText(plan.limit);
-                p->InsertEndChild(pLimit);
-            }
-
             auto backups = doc.NewElement("amountOfBackupMeasurements");
             backups->SetText(sensor->getNrBackupMeasurements());
             s->InsertEndChild(backups);
@@ -122,7 +94,7 @@ public:
      * 
      * \return an XML representation of the sensors
     */
-    const char* toXML()
+    const char* toXML(std::list<Sensor*> sensors)
     {
         XMLDocument doc;
         auto root = doc.NewElement("sensorreading");
@@ -136,9 +108,8 @@ public:
         
         auto sroot = doc.NewElement("sensors");
         root->InsertEndChild(sroot);
-
-        for (auto& sensor : _sensors)
-        {
+        for (auto sensor : sensors)
+        {            
             auto s = doc.NewElement("sensor");
             s->SetAttribute("id", sensor->getName());
             sroot->InsertEndChild(s);
@@ -157,12 +128,27 @@ public:
         doc.Print(&printer);
         return printer.CStr();
     }
+
+    void update()
+    {
+        std::list<Sensor*> queue;
+        for (auto& sensor : _sensors)
+        {
+            if (sensor->needsUpdate(ntp.getEpochTime()))
+            {
+                queue.push_back(sensor);
+            }
+        }
+        if (!queue.empty())
+        {
+            Serial.println(toXML(queue));
+        }
+    }
 private:
     std::list<Sensor*> _sensors;
     const char* _name;
     const char* _identifier;
     const char* _topic;
-    const size_t _daysToKeepMessages;
     const bool _toDecisionAgent;
     NTPClient &ntp;
 };

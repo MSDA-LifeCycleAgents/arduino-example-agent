@@ -5,8 +5,8 @@
 class AcceleroSensor : public Sensor
 {
 public:
-    AcceleroSensor(std::list<Plan> plans)
-        : Sensor("AcceleroSensor", "G", 10, -1000.0f, 1000.0f, 10, plans)
+    AcceleroSensor()
+        : Sensor("AcceleroSensor", "G", 10, -1000.0f, 1000.0f, 10)
     {}
 
     virtual bool activate() override
